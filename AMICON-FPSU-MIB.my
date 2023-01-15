@@ -1,0 +1,2670 @@
+AMICON-FPSU-MIB DEFINITIONS ::= BEGIN
+
+  -- Encoded in ANSI-1251
+  -- ФПСУ-IP MIB версия 1.0.27
+  -- (c) 2011-2018 ООО "Амикон". www.amicon.ru
+
+ IMPORTS
+     MODULE-IDENTITY, OBJECT-TYPE, NOTIFICATION-TYPE, Counter32, Counter64, IpAddress
+         FROM SNMPv2-SMI
+     TimeStamp, TimeInterval, DisplayString, MacAddress
+         FROM SNMPv2-TC
+     TimeTicks, IpAddress, Counter, enterprises
+         FROM RFC1155-SMI;
+
+  amicon OBJECT IDENTIFIER ::= { enterprises 37249 }
+
+  amiconProducts OBJECT IDENTIFIER ::= { amicon 1 }
+
+  amiconFpsu OBJECT IDENTIFIER ::= { amiconProducts 1 }
+
+  amiconFpsuIp OBJECT IDENTIFIER ::= { amiconFpsu 1 }
+
+  -- ==================================================================
+  -- System Object ID
+
+  amiconFpsuIpSysObjectID  OBJECT IDENTIFIER ::= { amiconFpsuIp 1 }
+
+  --  ======================================================================
+  --  Configuration Group
+
+  aFpsuInfo  OBJECT IDENTIFIER ::= { amiconFpsuIp 2 }
+
+  aFpsuSerialNumber OBJECT-TYPE
+      SYNTAX DisplayString (SIZE (16))
+      MAX-ACCESS read-only
+      STATUS current
+      DESCRIPTION   "Серийный номер ФПСУ"
+   ::= { aFpsuInfo 1 }
+
+  aFpsuBuildDate OBJECT-TYPE
+      SYNTAX   DisplayString (SIZE (64))
+      MAX-ACCESS   read-only
+      STATUS   current
+      DESCRIPTION    "Дата изготовления ФПСУ"
+     ::= { aFpsuInfo 2 }
+
+  -- =======================================================================
+  -- Hardware info
+  aFpsuHardware  OBJECT IDENTIFIER ::= { aFpsuInfo 3 }
+
+  --  ======================================================================
+  -- System Information
+  aFpsuHwSystem  OBJECT IDENTIFIER ::= { aFpsuHardware 1 }
+
+  aFpsuHwSystemManufacturer OBJECT-TYPE
+      SYNTAX DisplayString
+      MAX-ACCESS read-only
+      STATUS current
+      DESCRIPTION    "Производитель аппаратной платформы"
+   ::= { aFpsuHwSystem 1 }
+
+  aFpsuHwSystemName OBJECT-TYPE
+      SYNTAX DisplayString
+      MAX-ACCESS read-only
+      STATUS current
+      DESCRIPTION    "Название аппаратной платформы"
+   ::= { aFpsuHwSystem 2 }
+
+  aFpsuHwSystemSerialNumber OBJECT-TYPE
+      SYNTAX DisplayString
+      MAX-ACCESS read-only
+      STATUS current
+      DESCRIPTION    "Серийный номер аппаратной платформы"
+   ::= { aFpsuHwSystem 3 }
+
+  aFpsuHwSystemWakeUpType OBJECT-TYPE
+      SYNTAX DisplayString
+      MAX-ACCESS read-only
+      STATUS current
+      DESCRIPTION    "Тип включения аппаратной платформы"
+   ::= { aFpsuHwSystem 4 }
+
+  --  ======================================================================
+  -- Mainboard
+  aFpsuHwMainboard  OBJECT IDENTIFIER ::= { aFpsuHardware 2 }
+
+  aFpsuHwMainboardManufacturer OBJECT-TYPE
+      SYNTAX DisplayString
+      MAX-ACCESS read-only
+      STATUS current
+      DESCRIPTION    "Производитель системной платы"
+   ::= { aFpsuHwMainboard 1 }
+
+  aFpsuHwMainboardName OBJECT-TYPE
+      SYNTAX DisplayString
+      MAX-ACCESS read-only
+      STATUS current
+      DESCRIPTION    "Модель системной платы"
+   ::= { aFpsuHwMainboard 2 }
+
+  aFpsuHwMainboardVersion OBJECT-TYPE
+      SYNTAX DisplayString
+      MAX-ACCESS read-only
+      STATUS current
+      DESCRIPTION    "Версия системной платы"
+   ::= { aFpsuHwMainboard 3 }
+
+  aFpsuHwMainboardSerialNumber OBJECT-TYPE
+      SYNTAX DisplayString
+      MAX-ACCESS read-only
+      STATUS current
+      DESCRIPTION    "Серийный номер системной платы"
+   ::= { aFpsuHwMainboard 4 }
+
+  aFpsuHwMainboardAssetTag OBJECT-TYPE
+      SYNTAX DisplayString
+      MAX-ACCESS read-only
+      STATUS current
+      DESCRIPTION    "Asset Tag"
+   ::= { aFpsuHwMainboard 5 }
+
+  --  ======================================================================
+  -- BIOS
+  aFpsuHwBios  OBJECT IDENTIFIER ::= { aFpsuHardware 3 }
+
+  aFpsuHwBiosVendor OBJECT-TYPE
+      SYNTAX DisplayString
+      MAX-ACCESS read-only
+      STATUS current
+      DESCRIPTION    "Производитель BIOS"
+   ::= { aFpsuHwBios 1 }
+
+  aFpsuHwBiosVersion OBJECT-TYPE
+      SYNTAX DisplayString
+      MAX-ACCESS read-only
+      STATUS current
+      DESCRIPTION    "Версия BIOS"
+   ::= { aFpsuHwBios 2 }
+
+  aFpsuHwBiosReleaseDate OBJECT-TYPE
+      SYNTAX DisplayString
+      MAX-ACCESS read-only
+      STATUS current
+      DESCRIPTION    "Дата релиза BIOS"
+   ::= { aFpsuHwBios 3 }
+
+  aFpsuHwBiosRevision OBJECT-TYPE
+      SYNTAX DisplayString
+      MAX-ACCESS read-only
+      STATUS current
+      DESCRIPTION    "Номер ревизии BIOS"
+   ::= { aFpsuHwBios 4 }
+
+  aFpsuHwBiosFirmware OBJECT-TYPE
+      SYNTAX DisplayString
+      MAX-ACCESS read-only
+      STATUS current
+      DESCRIPTION    "Версия прошивки"
+   ::= { aFpsuHwBios 5 }
+
+
+  --  ======================================================================
+  -- memory
+  aFpsuHwMemory  OBJECT IDENTIFIER ::= { aFpsuHardware 4 }
+
+  aFpsuHwMemoryRamMbs OBJECT-TYPE
+      SYNTAX INTEGER
+      MAX-ACCESS read-only
+      STATUS current
+      DESCRIPTION    "Размер ОЗУ в мегабайтах"
+   ::= { aFpsuHwMemory 1 }
+
+  --  ======================================================================
+  -- sensors
+  aFpsuHwSensors  OBJECT IDENTIFIER ::= { aFpsuHardware 5 }
+
+  aFpsuHwVoltageProbe OBJECT-TYPE
+      SYNTAX DisplayString
+      MAX-ACCESS read-only
+      STATUS current
+      DESCRIPTION    "Тип датчика напряжения"
+   ::= { aFpsuHwSensors 1 }
+
+  aFpsuHwTemperatureProbe OBJECT-TYPE
+      SYNTAX DisplayString
+      MAX-ACCESS read-only
+      STATUS current
+      DESCRIPTION    "Тип датчика температуры"
+   ::= { aFpsuHwSensors 2 }
+
+  --  ======================================================================
+  -- CPU info
+  aFpsuHwCpuInfoTable OBJECT-TYPE
+     SYNTAX   SEQUENCE OF FpsuHwCpuInfoEntry
+     MAX-ACCESS   not-accessible
+     STATUS   current
+     DESCRIPTION  "Информация о процессорах"
+     ::= { aFpsuHardware 6 }
+
+  aFpsuHwCpuInfoEntry OBJECT-TYPE
+     SYNTAX   FpsuHwCpuInfoEntry
+     MAX-ACCESS   not-accessible
+     STATUS   current
+     DESCRIPTION  "Информация о процессоре"
+     INDEX { aFpsuHwCpuInfoIndex }
+     ::= { aFpsuHwCpuInfoTable 1 }
+
+  FpsuHwCpuInfoEntry ::= SEQUENCE {
+     aFpsuHwCpuInfoIndex          INTEGER,
+     aFpsuHwCpuInfoSocket         DisplayString,
+     aFpsuHwCpuInfoType           DisplayString,
+     aFpsuHwCpuInfoFamily         DisplayString,
+     aFpsuHwCpuInfoManufacturer   DisplayString,
+     aFpsuHwCpuInfoSignature      DisplayString,
+     aFpsuHwCpuInfoVersion        DisplayString,
+     aFpsuHwCpuInfoMaxSpeed       INTEGER,
+     aFpsuHwCpuInfoCurrentSpeed   INTEGER,
+     aFpsuHwCpuInfoCoreCount      INTEGER,
+     aFpsuHwCpuInfoCoreEnabled    INTEGER,
+     aFpsuHwCpuInfoThreadCount    INTEGER
+  }
+
+  aFpsuHwCpuInfoIndex OBJECT-TYPE
+      SYNTAX INTEGER
+      MAX-ACCESS read-only
+      STATUS current
+      DESCRIPTION    "Номер процессора"
+   ::= { aFpsuHwCpuInfoEntry 1 }
+
+  aFpsuHwCpuInfoSocket OBJECT-TYPE
+      SYNTAX DisplayString
+      MAX-ACCESS read-only
+      STATUS current
+      DESCRIPTION    "Гнездо процессора"
+   ::= { aFpsuHwCpuInfoEntry 2 }
+
+  aFpsuHwCpuInfoType OBJECT-TYPE
+      SYNTAX DisplayString
+      MAX-ACCESS read-only
+      STATUS current
+      DESCRIPTION    "Тип процессора"
+   ::= { aFpsuHwCpuInfoEntry 3 }
+
+  aFpsuHwCpuInfoFamily OBJECT-TYPE
+      SYNTAX DisplayString
+      MAX-ACCESS read-only
+      STATUS current
+      DESCRIPTION    "Семейство процессора"
+   ::= { aFpsuHwCpuInfoEntry 4 }
+
+  aFpsuHwCpuInfoManufacturer OBJECT-TYPE
+      SYNTAX DisplayString
+      MAX-ACCESS read-only
+      STATUS current
+      DESCRIPTION    "Производитель процессора"
+   ::= { aFpsuHwCpuInfoEntry 5 }
+
+  aFpsuHwCpuInfoSignature OBJECT-TYPE
+      SYNTAX DisplayString
+      MAX-ACCESS read-only
+      STATUS current
+      DESCRIPTION    "Сигнатура процессора"
+   ::= { aFpsuHwCpuInfoEntry 6 }
+
+  aFpsuHwCpuInfoVersion OBJECT-TYPE
+      SYNTAX DisplayString
+      MAX-ACCESS read-only
+      STATUS current
+      DESCRIPTION    "Версия процессора"
+   ::= { aFpsuHwCpuInfoEntry 7 }
+
+  aFpsuHwCpuInfoMaxSpeed OBJECT-TYPE
+      SYNTAX INTEGER
+      MAX-ACCESS read-only
+      STATUS current
+      DESCRIPTION    "Максимальная скорость (МГц) процессора"
+   ::= { aFpsuHwCpuInfoEntry 8 }
+
+  aFpsuHwCpuInfoCurrentSpeed OBJECT-TYPE
+      SYNTAX INTEGER
+      MAX-ACCESS read-only
+      STATUS current
+      DESCRIPTION    "Текущая скорость (МГц) процессора"
+   ::= { aFpsuHwCpuInfoEntry 9 }
+
+  aFpsuHwCpuInfoCoreCount OBJECT-TYPE
+      SYNTAX INTEGER
+      MAX-ACCESS read-only
+      STATUS current
+      DESCRIPTION    "Количество ядер процессора"
+   ::= { aFpsuHwCpuInfoEntry 10 }
+
+  aFpsuHwCpuInfoCoreEnabled OBJECT-TYPE
+      SYNTAX INTEGER
+      MAX-ACCESS read-only
+      STATUS current
+      DESCRIPTION    "Количество активных ядер процессора"
+   ::= { aFpsuHwCpuInfoEntry 11 }
+
+  aFpsuHwCpuInfoThreadCount OBJECT-TYPE
+      SYNTAX INTEGER
+      MAX-ACCESS read-only
+      STATUS current
+      DESCRIPTION    "Количество потоков процессора"
+   ::= { aFpsuHwCpuInfoEntry 12 }
+
+  --  ======================================================================
+  -- SMART info
+  aFpsuHwSmartInfoTable OBJECT-TYPE
+     SYNTAX   SEQUENCE OF FpsuHwSmartInfoEntry
+     MAX-ACCESS   not-accessible
+     STATUS   current
+     DESCRIPTION  "Состояние жестких дисков"
+     ::= { aFpsuHardware 7 }
+
+  aFpsuHwSmartInfoEntry OBJECT-TYPE
+     SYNTAX   FpsuHwSmartInfoEntry
+     MAX-ACCESS   not-accessible
+     STATUS   current
+     DESCRIPTION  "Параметр состояния жесткого диска"
+     INDEX { aFpsuHwSmartInfoIndex }
+     ::= { aFpsuHwSmartInfoTable 1 }
+
+  FpsuHwSmartInfoEntry ::= SEQUENCE {
+     aFpsuHwSmartInfoIndex        INTEGER,
+     aFpsuHwSmartInfoDev          DisplayString,
+     aFpsuHwSmartInfoId           INTEGER,
+     aFpsuHwSmartInfoName         DisplayString,
+     aFpsuHwSmartInfoValue        INTEGER,
+     aFpsuHwSmartInfoWorst        INTEGER,
+     aFpsuHwSmartInfoThresholds   INTEGER,
+     aFpsuHwSmartInfoType         INTEGER,
+     aFpsuHwSmartInfoUpdated      INTEGER,
+     aFpsuHwSmartInfoFailed       INTEGER
+  }
+
+  aFpsuHwSmartInfoIndex OBJECT-TYPE
+      SYNTAX INTEGER
+      MAX-ACCESS read-only
+      STATUS current
+      DESCRIPTION    "Номер параметра"
+   ::= { aFpsuHwSmartInfoEntry 1 }
+
+  aFpsuHwSmartInfoDev OBJECT-TYPE
+      SYNTAX DisplayString
+      MAX-ACCESS read-only
+      STATUS current
+      DESCRIPTION    "Устройство"
+   ::= { aFpsuHwSmartInfoEntry 2 }
+
+  aFpsuHwSmartInfoId OBJECT-TYPE
+      SYNTAX INTEGER
+      MAX-ACCESS read-only
+      STATUS current
+      DESCRIPTION    "Идентификатор параметра"
+   ::= { aFpsuHwSmartInfoEntry 3 }
+
+  aFpsuHwSmartInfoName OBJECT-TYPE
+      SYNTAX DisplayString
+      MAX-ACCESS read-only
+      STATUS current
+      DESCRIPTION    "Название параметра"
+   ::= { aFpsuHwSmartInfoEntry 4 }
+
+  aFpsuHwSmartInfoValue OBJECT-TYPE
+      SYNTAX INTEGER
+      MAX-ACCESS read-only
+      STATUS current
+      DESCRIPTION    "Значение параметра"
+   ::= { aFpsuHwSmartInfoEntry 5 }
+
+  aFpsuHwSmartInfoWorst OBJECT-TYPE
+      SYNTAX INTEGER
+      MAX-ACCESS read-only
+      STATUS current
+      DESCRIPTION    "Худшее значение"
+   ::= { aFpsuHwSmartInfoEntry 6 }
+
+  aFpsuHwSmartInfoThresholds OBJECT-TYPE
+      SYNTAX INTEGER
+      MAX-ACCESS read-only
+      STATUS current
+      DESCRIPTION    "Пороговое значение"
+   ::= { aFpsuHwSmartInfoEntry 7 }
+
+  aFpsuHwSmartInfoType OBJECT-TYPE
+     SYNTAX   INTEGER {
+        oldage       (0),
+        prefail      (1)
+     }
+      MAX-ACCESS read-only
+      STATUS current
+      DESCRIPTION    "Тип параметра"
+   ::= { aFpsuHwSmartInfoEntry 8 }
+
+  aFpsuHwSmartInfoUpdated OBJECT-TYPE
+     SYNTAX   INTEGER {
+        always       (0),
+        offline      (1)
+     }
+      MAX-ACCESS read-only
+      STATUS current
+      DESCRIPTION    "Обновление параметра"
+   ::= { aFpsuHwSmartInfoEntry 9 }
+
+  aFpsuHwSmartInfoFailed OBJECT-TYPE
+     SYNTAX   INTEGER {
+        none       (0),
+        now        (1),
+        past       (2)
+     }
+      MAX-ACCESS read-only
+      STATUS current
+      DESCRIPTION    "Отклонение параметра"
+   ::= { aFpsuHwSmartInfoEntry 10 }
+
+  --  ======================================================================
+  -- sensors
+  aFpsuHwDisk  OBJECT IDENTIFIER ::= { aFpsuHardware 8 }
+
+  aFpsuHwDiskFree OBJECT-TYPE
+      SYNTAX INTEGER
+      MAX-ACCESS read-only
+      STATUS current
+      DESCRIPTION    "Свободно на диске kb"
+   ::= { aFpsuHwDisk 1 }
+
+  aFpsuHwDiskTotal OBJECT-TYPE
+      SYNTAX INTEGER
+      MAX-ACCESS read-only
+      STATUS current
+      DESCRIPTION    "Емкость диска kb"
+   ::= { aFpsuHwDisk 2 }
+
+  -- =======================================================================
+  -- Software info
+  aFpsuSoftware  OBJECT IDENTIFIER ::= { aFpsuInfo 4 }
+
+  aFpsuSwVer OBJECT-TYPE
+      SYNTAX DisplayString (SIZE (1..64))
+      MAX-ACCESS read-only
+      STATUS current
+      DESCRIPTION   "Номер версии ПО ФПСУ"
+   ::= { aFpsuSoftware 1 }
+
+  aFpsuSwInstallationDate OBJECT-TYPE
+      SYNTAX   DisplayString (SIZE (64))
+      MAX-ACCESS   read-only
+      STATUS   current
+      DESCRIPTION   "Дата установки ПО ФПСУ"
+     ::= { aFpsuSoftware 2 }
+
+  aFpsuSwEndSupportDate OBJECT-TYPE
+      SYNTAX   DisplayString (SIZE (64))
+      MAX-ACCESS   read-only
+      STATUS   current
+      DESCRIPTION    "Дата окончания поддержки ФПСУ"
+     ::= { aFpsuSoftware 3 }
+
+  aFpsuSwAutostart OBJECT-TYPE
+     SYNTAX   INTEGER {
+        disabled   (0),
+        enabled    (1)
+     }
+      MAX-ACCESS read-only
+      STATUS current
+      DESCRIPTION    "Автозапуск системы"
+     ::= { aFpsuSoftware 4 }
+
+  -- =======================================================================
+  -- FPSU state
+
+  amiconState OBJECT IDENTIFIER ::= { amicon 2 }
+
+  aFpsuState OBJECT IDENTIFIER ::= { amiconState 1 }
+
+  -- =======================================================================
+  -- Memory statistics
+
+  aFpsuMemoryUse  OBJECT IDENTIFIER ::= { aFpsuState 1 }
+
+  aFpsuMemoryUseTable OBJECT-TYPE
+     SYNTAX   SEQUENCE OF FpsuMemoryUseEntry
+     MAX-ACCESS   not-accessible
+     STATUS   current
+     DESCRIPTION  "Использование памяти"
+     ::= { aFpsuMemoryUse 1 }
+
+  aFpsuMemoryUseEntry OBJECT-TYPE
+     SYNTAX   FpsuMemoryUseEntry
+     MAX-ACCESS   not-accessible
+     STATUS   current
+     DESCRIPTION  "Использование памяти"
+     INDEX { aFpsuMemoryUseIndex }
+     ::= { aFpsuMemoryUseTable 1 }
+
+  FpsuMemoryUseEntry ::= SEQUENCE {
+     aFpsuMemoryUseIndex          INTEGER,
+     aFpsuMemoryUseArpMin         INTEGER,
+     aFpsuMemoryUseArpMax         INTEGER,
+     aFpsuMemoryUseArpNow         INTEGER,
+
+     aFpsuMemoryUseRecvMin        INTEGER,
+     aFpsuMemoryUseRecvMax        INTEGER,
+     aFpsuMemoryUseRecvNow        INTEGER,
+
+     aFpsuMemoryUseSendMin        INTEGER,
+     aFpsuMemoryUseSendMax        INTEGER,
+     aFpsuMemoryUseSendNow        INTEGER
+  }
+
+  aFpsuMemoryUseIndex OBJECT-TYPE
+     SYNTAX   INTEGER
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION   "Номер порта"
+     ::= { aFpsuMemoryUseEntry 1 }
+
+  aFpsuMemoryUseArpMin OBJECT-TYPE
+     SYNTAX   INTEGER
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION   "Мин. использование памяти для ARP"
+     ::= { aFpsuMemoryUseEntry 2 }
+
+  aFpsuMemoryUseArpMax OBJECT-TYPE
+     SYNTAX   INTEGER
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION   "Макс. использование памяти для ARP"
+     ::= { aFpsuMemoryUseEntry 3 }
+
+  aFpsuMemoryUseArpNow OBJECT-TYPE
+     SYNTAX   INTEGER
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION   "Сейчас использование памяти для ARP"
+     ::= { aFpsuMemoryUseEntry 4 }
+
+  aFpsuMemoryUseRecvMin OBJECT-TYPE
+     SYNTAX   INTEGER
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION   "Мин. использование памяти на прием"
+     ::= { aFpsuMemoryUseEntry 5 }
+
+  aFpsuMemoryUseRecvMax OBJECT-TYPE
+     SYNTAX   INTEGER
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION   "Макс. использование памяти на примем"
+     ::= { aFpsuMemoryUseEntry 6 }
+
+  aFpsuMemoryUseRecvNow OBJECT-TYPE
+     SYNTAX   INTEGER
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION   "Сейчас использование памяти на прием"
+     ::= { aFpsuMemoryUseEntry 7 }
+
+  aFpsuMemoryUseSendMin OBJECT-TYPE
+     SYNTAX   INTEGER
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION   "Мин. использование памяти на передачу"
+     ::= { aFpsuMemoryUseEntry 8 }
+
+  aFpsuMemoryUseSendMax OBJECT-TYPE
+     SYNTAX   INTEGER
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION   "Макс. использование памяти на передачу"
+     ::= { aFpsuMemoryUseEntry 9 }
+
+  aFpsuMemoryUseSendNow OBJECT-TYPE
+     SYNTAX   INTEGER
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION   "Сейчас использование памяти на передачу"
+     ::= { aFpsuMemoryUseEntry 10 }
+
+  aFpsuMemoryTotal OBJECT-TYPE
+     SYNTAX   INTEGER
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION   "Всего памяти доступно"
+     ::= { aFpsuMemoryUse 10 }
+
+  aFpsuMemoryFree OBJECT-TYPE
+     SYNTAX   INTEGER
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION   "Всего памяти свободно"
+     ::= { aFpsuMemoryUse 11 }
+
+  -- =======================================================================
+  -- Users state
+
+  aFpsuUserStateTable OBJECT-TYPE
+     SYNTAX   SEQUENCE OF FpsuUserStateEntry
+     MAX-ACCESS   not-accessible
+     STATUS   current
+     DESCRIPTION  "Информация о состоянии работы абонентов ФПСУ"
+     ::= { aFpsuState 2 }
+
+  aFpsuUserStateEntry OBJECT-TYPE
+     SYNTAX   FpsuUserStateEntry
+     MAX-ACCESS   not-accessible
+     STATUS   current
+     DESCRIPTION  "Состояние связи между абонентами ФПСУ"
+     INDEX { aFpsuUserStateIndex }
+     ::= { aFpsuUserStateTable 1 }
+
+  FpsuUserStateEntry ::= SEQUENCE {
+     aFpsuUserStateIndex          INTEGER,
+     aFpsuUserStateFirstIp        IpAddress,
+     aFpsuUserStateFirstWithFpsu  INTEGER,
+     aFpsuUserStateSecondIp       IpAddress,
+     aFpsuUserStateSecondWithFpsu INTEGER,
+     aFpsuUserStateRecvSrcBytes   Counter64,
+     aFpsuUserStateRecvDstBytes   Counter64,
+     aFpsuUserStateError          INTEGER
+  }
+
+  aFpsuUserStateIndex OBJECT-TYPE
+     SYNTAX   INTEGER
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION   "Номер записи в таблице абонентов ФПСУ"
+     ::= { aFpsuUserStateEntry 1 }
+
+  aFpsuUserStateFirstIp OBJECT-TYPE
+     SYNTAX   IpAddress
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION   "IP первого абонента"
+     ::= { aFpsuUserStateEntry 2 }
+
+  aFpsuUserStateFirstWithFpsu OBJECT-TYPE
+     SYNTAX   INTEGER {
+        nofpsu       (0),
+        withfpsu     (1)
+     }
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION  "Флаг работы первого абонента через ФПСУ"
+     ::= { aFpsuUserStateEntry 3 }
+
+  aFpsuUserStateSecondIp OBJECT-TYPE
+     SYNTAX   IpAddress
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION  "IP второго абонента"
+     ::= { aFpsuUserStateEntry 4 }
+
+  aFpsuUserStateSecondWithFpsu OBJECT-TYPE
+     SYNTAX   INTEGER {
+        nofpsu       (0),
+        withfpsu     (1)
+     }
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION  "Флаг работы второго абонента через ФПСУ"
+     ::= { aFpsuUserStateEntry 5 }
+
+  aFpsuUserStateRecvSrcBytes OBJECT-TYPE
+     SYNTAX   Counter64
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION  "Количество байт для порта 1"
+     ::= { aFpsuUserStateEntry 6 }
+
+  aFpsuUserStateRecvDstBytes OBJECT-TYPE
+     SYNTAX   Counter64
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+                  "Количество байт для порта 2"
+     ::= { aFpsuUserStateEntry 7 }
+
+  aFpsuUserStateError OBJECT-TYPE
+     SYNTAX   INTEGER {
+        noerror         (0),
+        nomem           (1),
+        badaddr         (2),
+        shortpack       (3),
+        dbladdr         (4),
+        unknown         (5),
+        remoteunknown   (6),
+        prohibit        (7),
+        guardneeded     (8),
+        guardnotready   (9),
+        noroute         (10),
+        iface           (11),
+        modework        (12),
+        ttl             (13),
+        badguard        (14),
+        unsupreq        (15),
+        lan             (16),
+        prohconnect     (17),
+        lenpack         (18),
+        cantfrag        (19),
+        guardnotneeded  (20),
+        tcpudp          (21),
+        sourceroute     (22),
+        invalidtotlen   (23),
+        invalidoplist   (24),
+        guardignore     (25),
+        guardremerr     (26),
+        serialization   (27),
+        redirect        (28),
+        clibadpack      (29),
+        clinotconnect   (30),
+        ifaceclientuser (31),
+        ifaceclientclient (32),
+        vlanunknown       (33)
+     }
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+      " Код ошибки:
+        noerror         нет ошибки
+        nomem           нет памяти для обработки пакета
+        badaddr         не верен IP-адрес
+        shortpack       пакет слишком короткий
+        dbladdr         отказ в доступе (станция имеет IP-адреса портов ФПСУ)
+        unknown         отказ в доступе (не прописан)
+        remoteunknown   отказ в доступе (не прописан удаленный)
+        prohibit        отказ в доступе (запрет работы)
+        guardneeded     абонент должен работать через ФПСУ
+        guardnotready   удаленный фпсу не работает
+        noroute         маршрут неизвестен
+        iface           запрет по интерфейсам доступа
+        modework        запрет по режиму работы с партнером
+        ttl             истекло время жизни пакета
+        badguard        станция иммитирует ФПСУ
+        unsupreq        обращение с неподдерживаемым протоколом
+        lan             сбой lan карты
+        prohconnect     запрет по таблице взаимосвязей
+        lenpack         длина фрагмента > 65536
+        cantfrag        установлен df и требуется фрагментация
+        guardnotneeded  абонент должен работать в режиме ретрансляция, а пришел через ФПСУ
+        tcpudp          запрет доступа по tcp/udp портам
+        sourceroute     запрет доступа по sourceroute
+        invalidtotlen   фрагмент не кратен 8
+        invalidoplist   неверен список опций
+        guardignore     не установлен тунель между фпсу
+        guardremerr     ошибочный пакет от фпсу
+        serialization   ошибка сериализации(имеются ФПСУ с одинаковыми серийными номерами)
+        redirect        bad redirect от xxx.xxx.xxx.xxx (неправильный редирект-пакет от маршрутизатора)
+        clibadpack      ошибочный пакет от клиента
+        clinotconnect   клиент не соединен
+        ifaceclientuser   запрет доступа клиента к абоненту
+        ifaceclientclient запрет доступа клиента к клиенту
+        vlanunknown       vlan не прописан"
+     ::= { aFpsuUserStateEntry 8 }
+
+  -- =======================================================================
+  -- remote administrator state
+  aFpsuAdminStateTable OBJECT-TYPE
+     SYNTAX   SEQUENCE OF FpsuAdminStateEntry
+     MAX-ACCESS   not-accessible
+     STATUS   current
+     DESCRIPTION
+                  "Информация о взаимодействии с удаленными администраторами"
+     ::= { aFpsuState 3 }
+
+  aFpsuAdminStateEntry OBJECT-TYPE
+     SYNTAX   FpsuAdminStateEntry
+     MAX-ACCESS   not-accessible
+     STATUS   current
+     DESCRIPTION
+                  "Информация о взаимодействии с удаленным администратором"
+     INDEX { aFpsuAdminStateIndex }
+     ::= { aFpsuAdminStateTable 1 }
+
+  FpsuAdminStateEntry ::= SEQUENCE {
+     aFpsuAdminStateIndex             INTEGER,
+     aFpsuAdminName                   DisplayString,
+     aFpsuAdminPackedName             DisplayString,
+     aFpsuAdminStateIp                IpAddress,
+     aFpsuAdminStatePort              INTEGER,
+     aFpsuAdminStatePacketsIn         Counter32,
+     aFpsuAdminStatePacketsOut        Counter32,
+     aFpsuAdminStateDataIn            Counter64,
+     aFpsuAdminStateDataOut           Counter64,
+     aFpsuAdminStateErrors            Counter32,
+     aFpsuAdminStateMtu               INTEGER,
+     aFpsuAdminStateLastRequest       DisplayString
+  }
+
+  aFpsuAdminStateIndex OBJECT-TYPE
+     SYNTAX   INTEGER
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+                  "Номер администратора в таблице"
+     ::= { aFpsuAdminStateEntry 1 }
+
+  aFpsuAdminName OBJECT-TYPE
+     SYNTAX   DisplayString
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+                  "Имя администратора"
+  ::= { aFpsuAdminStateEntry 2 }
+
+  aFpsuAdminPackedName OBJECT-TYPE
+     SYNTAX   DisplayString (SIZE (8))
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+                  "Упакованное Имя администратора"
+  ::= { aFpsuAdminStateEntry 3 }
+
+  aFpsuAdminStateIp OBJECT-TYPE
+     SYNTAX   IpAddress
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+                    "IP адрес администратора"
+     ::= { aFpsuAdminStateEntry 4 }
+
+  aFpsuAdminStatePort OBJECT-TYPE
+     SYNTAX   INTEGER (1..65535)
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+                  "Порт администратора"
+     ::= { aFpsuAdminStateEntry 5 }
+
+  aFpsuAdminStatePacketsIn OBJECT-TYPE
+     SYNTAX   Counter32
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+                  "Кол-во переданных пакетов"
+     ::= { aFpsuAdminStateEntry 6 }
+
+  aFpsuAdminStatePacketsOut OBJECT-TYPE
+     SYNTAX   Counter32
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+                  "Кол-во переданных пакетов"
+     ::= { aFpsuAdminStateEntry 7 }
+
+  aFpsuAdminStateDataIn OBJECT-TYPE
+     SYNTAX   Counter64
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+                  "Кол-во принятых данных"
+     ::= { aFpsuAdminStateEntry 8 }
+
+  aFpsuAdminStateDataOut OBJECT-TYPE
+     SYNTAX   Counter64
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+                  "Кол-во переданных данных"
+     ::= { aFpsuAdminStateEntry 9 }
+
+  aFpsuAdminStateErrors OBJECT-TYPE
+     SYNTAX   Counter32
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+                  "Кол-во ошибок"
+     ::= { aFpsuAdminStateEntry 10 }
+
+  aFpsuAdminStateMtu OBJECT-TYPE
+     SYNTAX   INTEGER
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+                  "Размер MTU"
+     ::= { aFpsuAdminStateEntry 11 }
+
+  aFpsuAdminStateLastRequest OBJECT-TYPE
+     SYNTAX   DisplayString
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+                  "Последний запрос"
+     ::= { aFpsuAdminStateEntry 12 }
+
+  -- =======================================================================
+  -- clients state
+  aFpsuClientStateTable OBJECT-TYPE
+     SYNTAX   SEQUENCE OF FpsuClientStateEntry
+     MAX-ACCESS   not-accessible
+     STATUS   current
+     DESCRIPTION
+                  "Информация о остоянии работы клиентов ФПСУ-IP"
+     ::= { aFpsuState 4 }
+
+  aFpsuClientStateEntry OBJECT-TYPE
+     SYNTAX   FpsuClientStateEntry
+     MAX-ACCESS   not-accessible
+     STATUS   current
+     DESCRIPTION
+                  "Информация о остоянии работы клиента ФПСУ-IP"
+     INDEX { aFpsuClientStateIndex }
+     ::= { aFpsuClientStateTable 1 }
+
+  FpsuClientStateEntry ::= SEQUENCE {
+     aFpsuClientStateIndex            INTEGER,
+     aFpsuClientStateName             DisplayString,
+     aFpsuClientStateMac              MacAddress,
+     aFpsuClientStateRealIp           IpAddress,
+     aFpsuClientStatePrivateIp        IpAddress,
+     aFpsuClientStateLanPort          INTEGER,
+     aFpsuClientStateCenter           INTEGER,
+     aFpsuClientStateNumber           INTEGER,
+     aFpsuClientStateGroup            INTEGER,
+     aFpsuClientStateDataIn           Counter64,
+     aFpsuClientStateDataOut          Counter64,
+     aFpsuClientStatePacketsIn        Counter32,
+     aFpsuClientStatePacketsOut       Counter32,
+     aFpsuClientStateTunnelOpenTime   DisplayString,
+     aFpsuClientStateLastExchangeTime DisplayString,
+     aFpsuClientStateStatus           INTEGER
+  }
+
+  aFpsuClientStateIndex OBJECT-TYPE
+     SYNTAX   INTEGER
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+                  "Номер клиента в таблице"
+     ::= { aFpsuClientStateEntry 1 }
+
+  aFpsuClientStateName OBJECT-TYPE
+     SYNTAX   DisplayString (SIZE(1..255))
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+            "Имя, данное клиенту администратором ЦГКК при генерации его ключей"
+     ::= { aFpsuClientStateEntry 2 }
+
+  aFpsuClientStateMac OBJECT-TYPE
+     SYNTAX   MacAddress
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+                  "МАС-адрес клиента"
+     ::= { aFpsuClientStateEntry 3 }
+
+  aFpsuClientStateRealIp OBJECT-TYPE
+     SYNTAX   IpAddress
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+                  "Реальный IP-адрес, с которого работает клиент"
+     ::= { aFpsuClientStateEntry 4 }
+
+  aFpsuClientStatePrivateIp OBJECT-TYPE
+     SYNTAX   IpAddress
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+        "IP-адрес клиента в защищенном IP-фрагменте, присвоенный ему
+          администратором МЭ ФПСУ-IP"
+     ::= { aFpsuClientStateEntry 5 }
+
+  aFpsuClientStateLanPort OBJECT-TYPE
+     SYNTAX   INTEGER (1..2)
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+                  "Номер порта МЭ ФПСУ-IP, со стороны которого работает клиент;"
+     ::= { aFpsuClientStateEntry 6 }
+
+  aFpsuClientStateCenter OBJECT-TYPE
+     SYNTAX   INTEGER
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+                  "Номер ЦГКК"
+     ::= { aFpsuClientStateEntry 7 }
+
+  aFpsuClientStateNumber OBJECT-TYPE
+     SYNTAX   INTEGER
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+                  "Номер клиента в группе"
+     ::= { aFpsuClientStateEntry 8 }
+
+  aFpsuClientStateGroup OBJECT-TYPE
+     SYNTAX   INTEGER
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+                  "Номер группы в ЦГКК"
+     ::= { aFpsuClientStateEntry 9 }
+
+  aFpsuClientStateDataIn OBJECT-TYPE
+     SYNTAX   Counter64
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+                  "Количество байт данных, принятых от клиента с МЭ ФПСУ-IP"
+     ::= { aFpsuClientStateEntry 10 }
+
+  aFpsuClientStateDataOut OBJECT-TYPE
+     SYNTAX   Counter64
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+                  "Количество байт данных, переданных от клиента с МЭ ФПСУ-IP"
+     ::= { aFpsuClientStateEntry 11 }
+
+  aFpsuClientStatePacketsIn OBJECT-TYPE
+     SYNTAX   Counter32
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+                  "Количество пакетов принятых от клиента с МЭ ФПСУ-IP"
+     ::= { aFpsuClientStateEntry 12 }
+
+  aFpsuClientStatePacketsOut OBJECT-TYPE
+     SYNTAX   Counter32
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+                  "Количество пакетов переданных от клиента с МЭ ФПСУ-IP"
+     ::= { aFpsuClientStateEntry 13 }
+
+  aFpsuClientStateTunnelOpenTime OBJECT-TYPE
+     SYNTAX   DisplayString (SIZE(1..64))
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+            "Дата и время открытия туннеля - соединения клиента с МЭ ФПСУ-IP;"
+     ::= { aFpsuClientStateEntry 14 }
+
+  aFpsuClientStateLastExchangeTime OBJECT-TYPE
+     SYNTAX   DisplayString (SIZE(1..64))
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+          "Дата и время последнего обмена данными между МЭ ФПСУ-IP и клиентом;"
+     ::= { aFpsuClientStateEntry 15 }
+
+   aFpsuClientStateStatus OBJECT-TYPE
+     SYNTAX   INTEGER {
+        disconnected   (0),
+        connected      (1),
+        denied         (2)
+     }
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+       "Статус клиента
+         disconnected  - не подключен
+         connected     - подключен
+         denied        - запрещен
+        "
+     ::= { aFpsuClientStateEntry 16 }
+
+
+  -- =======================================================================
+  -- hot reserve state
+  aFpsuHotReserveState OBJECT IDENTIFIER ::= { aFpsuState 5 }
+
+  aFpsuHotReserveStateLocalRole OBJECT-TYPE
+     SYNTAX   INTEGER {
+        unknown          (0),
+        notanswer        (1),
+        stop             (2),
+        error            (3),
+        starting         (4),
+        working          (5),
+        reserving        (6),
+        takework         (7),
+        ending           (8),
+        synchro          (9),
+        blocked          (10),
+        restart          (11)
+     }
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+       "Роль месного ФПСУ
+        starting           стартует
+        working            в работе
+        reserving          в резерве
+        takework           просит работу
+        ending             выключается
+        synchro            принять настройки и актуальное ПО с другой машины
+        blocked            принудительная блокировка (адмом на время смены cfg)
+        restart            рестартует (пришел update)"
+     ::= { aFpsuHotReserveState 2 }
+
+  aFpsuHotReserveStateRemoteRole OBJECT-TYPE
+     SYNTAX   INTEGER {
+        unknown          (0),
+        notanswer        (1),
+        stop             (2),
+        error            (3),
+        starting         (4),
+        working          (5),
+        reserving        (6),
+        takework         (7),
+        ending           (8),
+        synchro          (9),
+        blocked          (10),
+        restart          (11)
+     }
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+       "Роль удаленного ФПСУ
+        unknown            неизвестно
+        notanswer          не отвечает
+        stop               остановлен
+        error              ошибка VPN
+        starting           стартует
+        working            в работе
+        reserving          в резерве
+        takework           просит работу
+        ending             выключается
+        synchro            принять настройки и актуальное ПО с другой машины
+        blocked            принудительная блокировка (адмом на время смены cfg)
+        restart            рестартует (пришл update)"
+     ::= { aFpsuHotReserveState 3 }
+
+  aFpsuHotReserveStateWork OBJECT-TYPE
+     SYNTAX   INTEGER {
+        nowork       (0),
+        workfine     (1)
+     }
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+       "Работоспособность удаленного ФПСУ
+         nowork       - не работает
+         workfine     - исправен
+       "
+     ::= { aFpsuHotReserveState 6 }
+
+  aFpsuHotReserveStateLocalMaster OBJECT-TYPE
+     SYNTAX   INTEGER {
+        none    (0),
+        yes     (1)
+     }
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+       "Основной локальный ФПСУ
+         none     - нет, резервный
+         yes      - да, основной
+       "
+     ::= { aFpsuHotReserveState 7 }
+
+  -- -----------------------------------------------------------------------------------------------------------------
+  -- =======================================================================
+  -- FPSU hardware state
+  aFpsuHardwareState OBJECT IDENTIFIER ::= { aFpsuState 6 }
+
+  aFpsuHwWatchDog OBJECT-TYPE
+     SYNTAX   INTEGER {
+       noactive    (0),
+       hardwarewd  (1),
+       softwarewd  (2)
+     }
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+       "Состояние WatchDog
+        noactive     нет активного
+        hardwarewd   аппаратный WD
+        softwarewd   программный WD"
+     ::= { aFpsuHardwareState 1 }
+
+  aFpsuHardwareFanState OBJECT IDENTIFIER ::= { aFpsuHardwareState 2 }
+
+  aFpsuHwFan1Speed OBJECT-TYPE
+     SYNTAX   INTEGER
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+       "Скорость вращения вентилятора №1"
+     ::= { aFpsuHardwareFanState 1 }
+
+  aFpsuHwFan2Speed OBJECT-TYPE
+     SYNTAX   INTEGER
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+       "Скорость вращения вентилятора №2"
+     ::= { aFpsuHardwareFanState 2 }
+
+  aFpsuHwFan3Speed OBJECT-TYPE
+     SYNTAX   INTEGER
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+       "Скорость вращения вентилятора №3"
+     ::= { aFpsuHardwareFanState 3 }
+
+  aFpsuHardwareTemperatureState OBJECT IDENTIFIER ::= { aFpsuHardwareState 3 }
+
+  aFpsuHwCpuTemperature OBJECT-TYPE
+     SYNTAX   INTEGER
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+       "Температура процессора"
+     ::= { aFpsuHardwareTemperatureState 1 }
+
+  aFpsuHwMBTemperature OBJECT-TYPE
+     SYNTAX   INTEGER
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+       "Температура материнской платы"
+     ::= { aFpsuHardwareTemperatureState 2 }
+
+  aFpsuHardwareVoltageState OBJECT IDENTIFIER ::= { aFpsuHardwareState 4 }
+
+  aFpsuHwPowerVoltage3 OBJECT-TYPE
+     SYNTAX   DisplayString
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+       "Напряжение на блоке питания 3.3v"
+     ::= { aFpsuHardwareVoltageState 1 }
+
+  aFpsuHwPowerVoltage5 OBJECT-TYPE
+     SYNTAX   DisplayString
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+       "Напряжение на блоке питания 5v"
+     ::= { aFpsuHardwareVoltageState 2 }
+
+  aFpsuHwPowerVoltage12 OBJECT-TYPE
+     SYNTAX   DisplayString
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+       "Напряжение на блоке питания 12v"
+     ::= { aFpsuHardwareVoltageState 3 }
+
+  aFpsuHwCpuLoad OBJECT-TYPE
+      SYNTAX INTEGER
+      MAX-ACCESS read-only
+      STATUS current
+      DESCRIPTION    "Загрузка CPU"
+   ::= { aFpsuHardwareState 5 }
+
+  aFpsuHardwarePowerSupplyState OBJECT IDENTIFIER ::= { aFpsuHardwareState 6 }
+
+  aFpsuHardwarePowerSupply1State OBJECT IDENTIFIER ::= { aFpsuHardwarePowerSupplyState 1 }
+
+  aFpsuHwPowerPS1 OBJECT-TYPE
+     SYNTAX   INTEGER
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+       "Мощность на первом блоке питания"
+     ::= { aFpsuHardwarePowerSupply1State 1 }
+
+  aFpsuHwTemperaturePS1 OBJECT-TYPE
+     SYNTAX   INTEGER
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+       "Температура на первом блоке питания"
+     ::= { aFpsuHardwarePowerSupply1State 2 }
+
+  aFpsuHardwarePowerSupply2State OBJECT IDENTIFIER ::= { aFpsuHardwarePowerSupplyState 2 }
+
+  aFpsuHwPowerPS2 OBJECT-TYPE
+     SYNTAX   INTEGER
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+       "Мощность на втором блоке питания"
+     ::= { aFpsuHardwarePowerSupply2State 1 }
+
+  aFpsuHwTemperaturePS2 OBJECT-TYPE
+     SYNTAX   INTEGER
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+       "Температура на втором блоке питания"
+     ::= { aFpsuHardwarePowerSupply2State 2 }
+
+  -- =======================================================================
+  -- other FPSU connection state
+
+  aFpsuOtherStateTable OBJECT-TYPE
+     SYNTAX   SEQUENCE OF FpsuOtherStateEntry
+     MAX-ACCESS   not-accessible
+     STATUS   current
+     DESCRIPTION
+        "Информация о взаимодействии с другими ФПСУ"
+     ::= { aFpsuState 7 }
+
+  aFpsuOtherStateEntry OBJECT-TYPE
+     SYNTAX   FpsuOtherStateEntry
+     MAX-ACCESS   not-accessible
+     STATUS   current
+     DESCRIPTION
+         "Информация о взаимодействии с другим ФПСУ"
+     INDEX { aFpsuOtherStateIndex }
+     ::= { aFpsuOtherStateTable 1 }
+
+  FpsuOtherStateEntry ::= SEQUENCE {
+     aFpsuOtherStateIndex             INTEGER,
+     aFpsuOtherStateIp                IpAddress,
+     aFpsuOtherStateSend              INTEGER,
+     aFpsuOtherStateCompression       INTEGER,
+     aFpsuOtherStateEncryption        INTEGER,
+     aFpsuOtherStateTransport         INTEGER,
+     aFpsuOtherStateVlan              INTEGER,
+     aFpsuOtherStateTimeChange        DisplayString,
+     aFpsuOtherStateTimeRecv          DisplayString,
+     aFpsuOtherStateTimeSend          DisplayString,
+     aFpsuOtherStateRecvBytes         Counter64,
+     aFpsuOtherStateRecvCBytes        Counter64,
+     aFpsuOtherStateRecvIpPacks       Counter32,
+     aFpsuOtherStateSendBytes         Counter64,
+     aFpsuOtherStateSendCBytes        Counter64,
+     aFpsuOtherStateSendIpPacks       Counter32,
+     aFpsuOtherStateErrorPackets      Counter32,
+     aFpsuOtherStateKeyNumber         INTEGER,
+     aFpsuOtherStateKeySet            INTEGER,
+     aFpsuOtherStateKeySeria          INTEGER,
+     aFpsuOtherStateKeyType           INTEGER
+  }
+
+  aFpsuOtherStateIndex OBJECT-TYPE
+     SYNTAX   INTEGER
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+        "Номер ФПСУ в таблице"
+     ::= { aFpsuOtherStateEntry 1 }
+
+  aFpsuOtherStateIp OBJECT-TYPE
+     SYNTAX   IpAddress
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+        "IP-адрес удаленного ФПСУ"
+     ::= { aFpsuOtherStateEntry 2 }
+
+  aFpsuOtherStateSend OBJECT-TYPE
+     SYNTAX   INTEGER {
+        nosendrecv      (1),
+        sendonly        (2),
+        recvonly        (3),
+        sendrecv        (4),
+        waitarp         (5),
+        waitsynrr       (6),
+        waitsynok       (7)
+     }
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+      "Состояние связи от текущего ФПСУ (стадии установки туннеля):
+      nosendrecv  - прием и передача данных абонентов от МЭ ФПСУ-IP невозможна;
+      nosend      - передача данных абонентов удаленному МЭ ФПСУ-IP невозможна
+      norecv      - прием данных абонентов от МЭ ФПСУ-IP невозможен;
+      sendrecvok  - прием и передача возможна и разрешена
+      waitarp     - прием и передача данных абонентов невозможны, MAC-адрес
+                    удаленного МЭ неизвестен
+      waitsynrr   - прием и передача данных абонентов невозможны, ожидается
+                    разрешение синхронизации от удаленного МЭ;
+      waitsynok   - прием и передача данных абонентов невозможны, ожидается
+                    установление синхронизации с удаленным МЭ ФПСУ-IP.
+      "
+     ::= { aFpsuOtherStateEntry 3 }
+
+  aFpsuOtherStateCompression OBJECT-TYPE
+     SYNTAX   INTEGER (0..1)
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+          "Согласован режим сжатия данных абонентов в канале между двумя МЭ;"
+     ::= { aFpsuOtherStateEntry 4 }
+
+  aFpsuOtherStateEncryption OBJECT-TYPE
+     SYNTAX   INTEGER {
+        noecncryption    (1),
+        encription       (2),
+        packetencryption (3)
+     }
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+       "режим шифрования
+         noencryption      - нет шифрования данных
+         encryption        - согласован режим шифрования данных абонентов в
+                              канале между двумя МЭ;
+         packetencryption  - согласован режим пакетного шифрования данных
+                              абонентов (пакеты шифруются не на сессионных
+                              ключах, а на вырабатываемых с их помощью пакетных
+                              ключах)
+        "
+     ::= { aFpsuOtherStateEntry 5 }
+
+  aFpsuOtherStateTransport OBJECT-TYPE
+     SYNTAX   INTEGER {
+        ip    (0),
+        udp   (1)
+     }
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+       "Транспортный протокол тунеля
+         ip      - IP
+         udp     - UDP
+        "
+     ::= { aFpsuOtherStateEntry 6 }
+
+  aFpsuOtherStateVlan OBJECT-TYPE
+     SYNTAX   INTEGER
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+        "Номер VLan"
+     ::= { aFpsuOtherStateEntry 7 }
+
+  aFpsuOtherStateTimeChange OBJECT-TYPE
+     SYNTAX   DisplayString (SIZE(1..64))
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+          "Время изменения состояния"
+     ::= { aFpsuOtherStateEntry 8 }
+
+  aFpsuOtherStateTimeRecv OBJECT-TYPE
+     SYNTAX   DisplayString (SIZE(1..64))
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+          "Время приема"
+     ::= { aFpsuOtherStateEntry 9 }
+
+  aFpsuOtherStateTimeSend OBJECT-TYPE
+     SYNTAX   DisplayString (SIZE(1..64))
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+          "Время передачи"
+     ::= { aFpsuOtherStateEntry 10 }
+
+  aFpsuOtherStateRecvBytes OBJECT-TYPE
+     SYNTAX   Counter64
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+        "Принято байт"
+     ::= { aFpsuOtherStateEntry 11 }
+
+  aFpsuOtherStateRecvCBytes OBJECT-TYPE
+     SYNTAX   Counter64
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+        "Принято тун. байт"
+     ::= { aFpsuOtherStateEntry 12 }
+
+  aFpsuOtherStateRecvIpPacks OBJECT-TYPE
+     SYNTAX   Counter32
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+        "Принято IP пакетов"
+     ::= { aFpsuOtherStateEntry 13 }
+
+  aFpsuOtherStateSendBytes OBJECT-TYPE
+     SYNTAX   Counter64
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+        "Передано байт"
+     ::= { aFpsuOtherStateEntry 14 }
+
+  aFpsuOtherStateSendCBytes OBJECT-TYPE
+     SYNTAX   Counter64
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+        "Передано тун. байт"
+     ::= { aFpsuOtherStateEntry 15 }
+
+  aFpsuOtherStateSendIpPacks OBJECT-TYPE
+     SYNTAX   Counter32
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+        "Передано IP пакетов"
+     ::= { aFpsuOtherStateEntry 16 }
+
+  aFpsuOtherStateErrorPackets OBJECT-TYPE
+     SYNTAX   Counter32
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+        "Отказов в приёме пакетов"
+     ::= { aFpsuOtherStateEntry 17 }
+
+  aFpsuOtherStateKeyNumber OBJECT-TYPE
+     SYNTAX   INTEGER
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+        "Номер ключа"
+     ::= { aFpsuOtherStateEntry 18 }
+
+  aFpsuOtherStateKeySet OBJECT-TYPE
+     SYNTAX   INTEGER
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+        "Комплект ключа"
+     ::= { aFpsuOtherStateEntry 19 }
+
+  aFpsuOtherStateKeySeria OBJECT-TYPE
+     SYNTAX   INTEGER
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+        "Серия ключа"
+     ::= { aFpsuOtherStateEntry 20 }
+
+  aFpsuOtherStateKeyType OBJECT-TYPE
+     SYNTAX   INTEGER {
+        ks1   (0),
+        ks3   (1),
+        ks2   (2),
+        kb2   (3)
+     }
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+       "Тип ключа
+         ks1      - КС1
+         ks2      - КС2
+         ks3      - КС3
+         kb2      - КБ2
+        "
+     ::= { aFpsuOtherStateEntry 21 }
+
+  -- =======================================================================
+  -- DrWeb state
+  aFpsuDrwebState OBJECT IDENTIFIER ::= { aFpsuState 8 }
+
+  aFpsuDrwebdCount OBJECT-TYPE
+     SYNTAX   INTEGER
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+       "Количество запущеных процессов drwebd"
+     ::= { aFpsuDrwebState 1 }
+
+  aFpsuDrwebdMemUsage OBJECT-TYPE
+     SYNTAX   INTEGER
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+       "Сумарное колво памяти занятое drwebd"
+     ::= { aFpsuDrwebState 2 }
+
+  aFpsuDrwebOutSize OBJECT-TYPE
+     SYNTAX   INTEGER
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+       "Место на диске занятое папкой out (kb)"
+     ::= { aFpsuDrwebState 3 }
+
+  aFpsuDrwebInSize OBJECT-TYPE
+     SYNTAX   INTEGER
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+       "Место на диске занятое папкой in (kb)"
+     ::= { aFpsuDrwebState 4 }
+
+  aFpsuDrwebTmpSize OBJECT-TYPE
+     SYNTAX   INTEGER
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+       "Место на диске занятое папкой tmp (kb)"
+     ::= { aFpsuDrwebState 5 }
+
+  aFpsuDrwebInfectedSize OBJECT-TYPE
+     SYNTAX   INTEGER
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+       "Место на диске занятое папкой infected (kb)"
+     ::= { aFpsuDrwebState 6 }
+
+  aFpsuDrwebDiskFreeSize OBJECT-TYPE
+     SYNTAX   INTEGER
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+       "Свободного места на диске (kb)"
+     ::= { aFpsuDrwebState 7 }
+
+  aFpsuDrwebUpdateTime OBJECT-TYPE
+     SYNTAX   DisplayString
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+       "Дата последней версии антивирусных баз"
+     ::= { aFpsuDrwebState 8 }
+
+  aFpsuDrwebKeyExpireTime OBJECT-TYPE
+     SYNTAX   DisplayString
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+       "Дата окончания действия ключа DrWeb"
+     ::= { aFpsuDrwebState 9 }
+
+  ----------------------------------------------- информация по процессам DrWeb
+  aFpsuDrwebProcsStateTable OBJECT-TYPE
+     SYNTAX   SEQUENCE OF FpsuDrwebProcsStateEntry
+     MAX-ACCESS   not-accessible
+     STATUS   current
+     DESCRIPTION
+        "Информация по процессам DrWeb"
+     ::= { aFpsuDrwebState 10 }
+
+  aFpsuDrwebProcsStateEntry OBJECT-TYPE
+     SYNTAX   FpsuDrwebProcsStateEntry
+     MAX-ACCESS   not-accessible
+     STATUS   current
+     DESCRIPTION
+         "Информация по процессам DrWeb"
+     INDEX { aFpsuDrwebProcsStateIndex }
+     ::= { aFpsuDrwebProcsStateTable 1 }
+
+  FpsuDrwebProcsStateEntry ::= SEQUENCE {
+     aFpsuDrwebProcsStateIndex        INTEGER,
+     aFpsuDrwebProcsStateName         DisplayString,
+     aFpsuDrwebProcsStateCount        INTEGER,
+     aFpsuDrwebProcsStateMemory       INTEGER,
+     aFpsuDrwebProcsStateSockets      INTEGER
+  }
+
+  aFpsuDrwebProcsStateIndex OBJECT-TYPE
+     SYNTAX   INTEGER
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+        "Номер службы DrWeb в таблице"
+     ::= { aFpsuDrwebProcsStateEntry 1 }
+
+  aFpsuDrwebProcsStateName OBJECT-TYPE
+     SYNTAX   DisplayString
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+        "Название службы DrWeb в таблице"
+     ::= { aFpsuDrwebProcsStateEntry 2 }
+
+  aFpsuDrwebProcsStateCount OBJECT-TYPE
+     SYNTAX   INTEGER
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+        "Колличество запущенных экземпляров"
+     ::= { aFpsuDrwebProcsStateEntry 3 }
+
+  aFpsuDrwebProcsStateMemory OBJECT-TYPE
+     SYNTAX   INTEGER
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+        "Объем памяти занятой процессами"
+     ::= { aFpsuDrwebProcsStateEntry 4 }
+
+  aFpsuDrwebProcsStateSockets OBJECT-TYPE
+     SYNTAX   INTEGER
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+        "Колличество сокетов, созданных процессами"
+     ::= { aFpsuDrwebProcsStateEntry 5 }
+
+  -- =======================================================================
+  -- Firewall state
+  aFpsuFwState OBJECT IDENTIFIER ::= { aFpsuState 9 }
+
+  aFpsuFwConnCount OBJECT-TYPE
+     SYNTAX   INTEGER
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+       "Количество активных соединений"
+     ::= { aFpsuFwState 1 }
+
+  aFpsuFwTcpCount OBJECT-TYPE
+     SYNTAX   INTEGER
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+       "Количество активных TCP соединений"
+     ::= { aFpsuFwState 2 }
+
+  aFpsuFwUdpCount OBJECT-TYPE
+     SYNTAX   INTEGER
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+       "Количество активных UDP соединений"
+     ::= { aFpsuFwState 3 }
+
+  aFpsuFwIcmpCount OBJECT-TYPE
+     SYNTAX   INTEGER
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+       "Количество активных Icmp соединений"
+     ::= { aFpsuFwState 4 }
+
+   aFpsuFwOtherCount OBJECT-TYPE
+     SYNTAX   INTEGER
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+       "Количество активных не TCP,UDP,ICMP соединений"
+     ::= { aFpsuFwState 5 }
+
+   aFpsuFwTcpFlood OBJECT-TYPE
+     SYNTAX   INTEGER {
+        none             (0),
+        flooddetected    (1)
+     }
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+       "обнаружен TCP-flood
+         none          - не обнаружен
+         flooddetected - обнаружен
+        "
+     ::= { aFpsuFwState 6 }
+
+   aFpsuFwUdpFlood OBJECT-TYPE
+     SYNTAX   INTEGER {
+        none             (0),
+        flooddetected    (1)
+     }
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+       "обнаружен UDP-flood
+         none          - не обнаружен
+         flooddetected - обнаружен
+        "
+     ::= { aFpsuFwState 7 }
+
+   aFpsuFwIcmpFlood OBJECT-TYPE
+     SYNTAX   INTEGER {
+        none             (0),
+        flooddetected    (1)
+     }
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+       "обнаружен ICMP-flood
+         none          - не обнаружен
+         flooddetected - обнаружен
+        "
+     ::= { aFpsuFwState 8 }
+
+   aFpsuFwOtherFlood OBJECT-TYPE
+     SYNTAX   INTEGER {
+        none             (0),
+        flooddetected    (1)
+     }
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+       "обнаружен не TCP,UDP,ICMP-flood
+         none          - не обнаружен
+         flooddetected - обнаружен
+        "
+     ::= { aFpsuFwState 9 }
+
+   aFpsuFwMemUsed OBJECT-TYPE
+     SYNTAX   INTEGER
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+       "Объем занятой памяти (Мб)"
+     ::= { aFpsuFwState 10 }
+
+   aFpsuFwFiltredPps OBJECT-TYPE
+     SYNTAX   INTEGER
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+       "Количество фильтруемых пакетов в секунду"
+     ::= { aFpsuFwState 11 }
+
+   aFpsuFwBanned OBJECT-TYPE
+     SYNTAX   INTEGER
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+       "Количество заблокированных IP адресов"
+     ::= { aFpsuFwState 12 }
+
+   aFpsuFwNatCount OBJECT-TYPE
+     SYNTAX   INTEGER
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+       "Количество записей в NAT"
+     ::= { aFpsuFwState 14 }
+
+  ---------------------------------------------------------------------------
+  -- banned ip table
+  aFpsuFwBannedTable OBJECT-TYPE
+     SYNTAX   SEQUENCE OF FpsuFwBannedTableEntry
+     MAX-ACCESS   not-accessible
+     STATUS   current
+     DESCRIPTION
+        "Заблокированные IP адреса"
+     ::= { aFpsuFwState 13 }
+
+  aFpsuFwBannedTableEntry OBJECT-TYPE
+     SYNTAX   FpsuFwBannedTableEntry
+     MAX-ACCESS   not-accessible
+     STATUS   current
+     DESCRIPTION
+         "Заблокированные IP адреса"
+     INDEX { aFpsuFwBannedTableIndex }
+     ::= { aFpsuFwBannedTable 1 }
+
+  FpsuFwBannedTableEntry ::= SEQUENCE {
+     aFpsuFwBannedTableIndex             INTEGER,
+     aFpsuFwBannedTableIp                IpAddress
+  }
+
+  aFpsuFwBannedTableIndex OBJECT-TYPE
+     SYNTAX   INTEGER
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+        "Номер заблокированного адреса в таблице"
+     ::= { aFpsuFwBannedTableEntry 1 }
+
+  aFpsuFwBannedTableIp OBJECT-TYPE
+     SYNTAX   IpAddress
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+        "Заблокированный IP-адрес"
+     ::= { aFpsuFwBannedTableEntry 2 }
+
+  ---------------------------------------------------------------------------
+  -- banned tcp port table
+  aFpsuFwBannedTcpPortTable OBJECT-TYPE
+     SYNTAX   SEQUENCE OF FpsuFwBannedTcpPortTableEntry
+     MAX-ACCESS   not-accessible
+     STATUS   current
+     DESCRIPTION
+        "Заблокированные TCP порты"
+     ::= { aFpsuFwState 15 }
+
+  aFpsuFwBannedTcpPortTableEntry OBJECT-TYPE
+     SYNTAX   FpsuFwBannedTcpPortTableEntry
+     MAX-ACCESS   not-accessible
+     STATUS   current
+     DESCRIPTION
+         "Заблокированные TCP порты"
+     INDEX { aFpsuFwBannedTcpPortTableIndex }
+     ::= { aFpsuFwBannedTcpPortTable 1 }
+
+  FpsuFwBannedTcpPortTableEntry ::= SEQUENCE {
+     aFpsuFwBannedTcpPortTableIndex             INTEGER,
+     aFpsuFwBannedTcpPortTableValue             INTEGER
+  }
+
+  aFpsuFwBannedTcpPortTableIndex OBJECT-TYPE
+     SYNTAX   INTEGER
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+        "Номер заблокированного порта в таблице"
+     ::= { aFpsuFwBannedTcpPortTableEntry 1 }
+
+  aFpsuFwBannedTcpPortTableValue OBJECT-TYPE
+     SYNTAX   INTEGER
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+        "Заблокированный порт"
+     ::= { aFpsuFwBannedTcpPortTableEntry 2 }
+
+  ---------------------------------------------------------------------------
+  -- banned udp port table
+  aFpsuFwBannedUdpPortTable OBJECT-TYPE
+     SYNTAX   SEQUENCE OF FpsuFwBannedUdpPortTableEntry
+     MAX-ACCESS   not-accessible
+     STATUS   current
+     DESCRIPTION
+        "Заблокированные UDP порты"
+     ::= { aFpsuFwState 16 }
+
+  aFpsuFwBannedUdpPortTableEntry OBJECT-TYPE
+     SYNTAX   FpsuFwBannedUdpPortTableEntry
+     MAX-ACCESS   not-accessible
+     STATUS   current
+     DESCRIPTION
+         "Заблокированные UDP порты"
+     INDEX { aFpsuFwBannedUdpPortTableIndex }
+     ::= { aFpsuFwBannedUdpPortTable 1 }
+
+  FpsuFwBannedUdpPortTableEntry ::= SEQUENCE {
+     aFpsuFwBannedUdpPortTableIndex             INTEGER,
+     aFpsuFwBannedUdpPortTableValue             INTEGER
+  }
+
+  aFpsuFwBannedUdpPortTableIndex OBJECT-TYPE
+     SYNTAX   INTEGER
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+        "Номер заблокированного порта в таблице"
+     ::= { aFpsuFwBannedUdpPortTableEntry 1 }
+
+  aFpsuFwBannedUdpPortTableValue OBJECT-TYPE
+     SYNTAX   INTEGER
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+        "Заблокированный порт"
+     ::= { aFpsuFwBannedUdpPortTableEntry 2 }
+
+  ---------------------------------------------------------------------------
+  -- banned ip-protocol table
+  aFpsuFwBannedIpProtoTable OBJECT-TYPE
+     SYNTAX   SEQUENCE OF FpsuFwBannedIpProtoTableEntry
+     MAX-ACCESS   not-accessible
+     STATUS   current
+     DESCRIPTION
+        "Заблокированные TCP/UDP порты"
+     ::= { aFpsuFwState 17 }
+
+  aFpsuFwBannedIpProtoTableEntry OBJECT-TYPE
+     SYNTAX   FpsuFwBannedIpProtoTableEntry
+     MAX-ACCESS   not-accessible
+     STATUS   current
+     DESCRIPTION
+         "Заблокированные TCP/UDP порты"
+     INDEX { aFpsuFwBannedIpProtoTableIndex }
+     ::= { aFpsuFwBannedIpProtoTable 1 }
+
+  FpsuFwBannedIpProtoTableEntry ::= SEQUENCE {
+     aFpsuFwBannedIpProtoTableIndex             INTEGER,
+     aFpsuFwBannedIpProtoTableValue             INTEGER
+  }
+
+  aFpsuFwBannedIpProtoTableIndex OBJECT-TYPE
+     SYNTAX   INTEGER
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+        "Номер заблокированного порта в таблице"
+     ::= { aFpsuFwBannedIpProtoTableEntry 1 }
+
+  aFpsuFwBannedIpProtoTableValue OBJECT-TYPE
+     SYNTAX   INTEGER
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+        "Заблокированный порт"
+     ::= { aFpsuFwBannedIpProtoTableEntry 2 }
+
+  ---------------------------------------------------------------------------
+  -- drop counters
+  aFpsuFwDropCounters OBJECT IDENTIFIER ::= { aFpsuFwState 18 }
+
+  aFpsuFwDropInvalidCount OBJECT-TYPE
+     SYNTAX   Counter64
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+       "Не валидные"
+     ::= { aFpsuFwDropCounters 1 }
+
+  aFpsuFwDropGatewayCount OBJECT-TYPE
+     SYNTAX   Counter64
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+       "Нет шлюза"
+     ::= { aFpsuFwDropCounters 2 }
+
+  aFpsuFwDropRuleCount OBJECT-TYPE
+     SYNTAX   Counter64
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+       "По правилам МЭ"
+     ::= { aFpsuFwDropCounters 3 }
+
+  aFpsuFwDropFloodCount OBJECT-TYPE
+     SYNTAX   Counter64
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+       "Флуд"
+     ::= { aFpsuFwDropCounters 4 }
+
+  aFpsuFwDropSpoofCount OBJECT-TYPE
+     SYNTAX   Counter64
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+       "Спуфинг"
+     ::= { aFpsuFwDropCounters 5 }
+
+  aFpsuFwDropBannedCount OBJECT-TYPE
+     SYNTAX   Counter64
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+       "Черный список"
+     ::= { aFpsuFwDropCounters 6 }
+
+  aFpsuFwDropMemCount OBJECT-TYPE
+     SYNTAX   Counter64
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+       "Не хватило памяти"
+     ::= { aFpsuFwDropCounters 7 }
+
+  aFpsuFwDropQosCount OBJECT-TYPE
+     SYNTAX   Counter64
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+       "QoS"
+     ::= { aFpsuFwDropCounters 8 }
+
+  aFpsuFwDropDpiCount OBJECT-TYPE
+     SYNTAX   Counter64
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+       "DPI"
+     ::= { aFpsuFwDropCounters 9 }
+
+  aFpsuFwDropInvalidIcmpCount OBJECT-TYPE
+     SYNTAX   Counter64
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+       "ICMP"
+     ::= { aFpsuFwDropCounters 10 }
+
+  aFpsuFwDropInvalidTcpNewCount OBJECT-TYPE
+     SYNTAX   Counter64
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+       "TCP новых"
+     ::= { aFpsuFwDropCounters 11 }
+
+  aFpsuFwDropInvalidTcpNewRstCount OBJECT-TYPE
+     SYNTAX   Counter64
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+       "TCP новых с флагом RST"
+     ::= { aFpsuFwDropCounters 12 }
+
+  aFpsuFwDropInvalidTcpNewFinCount OBJECT-TYPE
+     SYNTAX   Counter64
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+       "TCP новых с флагом FIN"
+     ::= { aFpsuFwDropCounters 13 }
+
+  aFpsuFwDropInvalidWindowCount OBJECT-TYPE
+     SYNTAX   Counter64
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+       "TCP вне окна"
+     ::= { aFpsuFwDropCounters 14 }
+
+  aFpsuFwDropInvalidStackCount OBJECT-TYPE
+     SYNTAX   Counter64
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+       "TCP не по стеку"
+     ::= { aFpsuFwDropCounters 15 }
+
+  aFpsuFwRiverbedPassedCount OBJECT-TYPE
+     SYNTAX   Counter64
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+       "пропущено в режиме Riverbed full transparency"
+     ::= { aFpsuFwDropCounters 16 }
+
+  ---------------------------------------------------------------------------
+  -- FPSU lan ports state
+  aFpsuLanPortsStateTable OBJECT-TYPE
+     SYNTAX   SEQUENCE OF FpsuLanPortsStateEntry
+     MAX-ACCESS   not-accessible
+     STATUS   current
+     DESCRIPTION
+        "Состояние lan-портов"
+     ::= { aFpsuState 10 }
+
+  aFpsuLanPortsStateEntry OBJECT-TYPE
+     SYNTAX   FpsuLanPortsStateEntry
+     MAX-ACCESS   not-accessible
+     STATUS   current
+     DESCRIPTION
+         "Состояние lan-портов"
+     INDEX { aFpsuLanPortsStateIndex }
+     ::= { aFpsuLanPortsStateTable 1 }
+
+  FpsuLanPortsStateEntry ::= SEQUENCE {
+     aFpsuLanPortsStateIndex             INTEGER,
+     aFpsuLanPortsStateSpeedIn           Counter64,
+     aFpsuLanPortsStateSpeedOut          Counter64,
+     aFpsuLanPortsStatePpsIn             Counter64,
+     aFpsuLanPortsStatePpsOut            Counter64,
+     aFpsuLanPortsStateArpIn             Counter64,
+     aFpsuLanPortsStateArpOut            Counter64,
+     aFpsuLanPortsStateArpDrop           Counter64,
+     aFpsuLanPortsStateArpSkip           Counter64,
+     aFpsuLanPortsStateArpBad            Counter64,
+     aFpsuLanPortsStateIpIn              Counter64,
+     aFpsuLanPortsStateIpOut             Counter64,
+     aFpsuLanPortsStateIpDrop            Counter64,
+     aFpsuLanPortsStateIpSkip            Counter64
+  }
+
+  aFpsuLanPortsStateIndex OBJECT-TYPE
+     SYNTAX   INTEGER
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+        "Номер LAN-порта"
+     ::= { aFpsuLanPortsStateEntry 1 }
+
+  aFpsuLanPortsStateSpeedIn OBJECT-TYPE
+     SYNTAX   Counter64
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+        "Скорость приема (кбит/сек)"
+     ::= { aFpsuLanPortsStateEntry 2 }
+
+  aFpsuLanPortsStateSpeedOut OBJECT-TYPE
+     SYNTAX   Counter64
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+        "Скорость передачи (кбит/сек)"
+     ::= { aFpsuLanPortsStateEntry 3 }
+
+  aFpsuLanPortsStatePpsIn OBJECT-TYPE
+     SYNTAX   Counter64
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+        "Скорость приема пакетов (пакетов/сек)"
+     ::= { aFpsuLanPortsStateEntry 4 }
+
+  aFpsuLanPortsStatePpsOut OBJECT-TYPE
+     SYNTAX   Counter64
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+        "Скорость передачи пакетов (пакетов/сек)"
+     ::= { aFpsuLanPortsStateEntry 5 }
+
+  aFpsuLanPortsStateArpIn OBJECT-TYPE
+     SYNTAX   Counter64
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+        "нормально принято ARP пакетов"
+     ::= { aFpsuLanPortsStateEntry 6 }
+
+  aFpsuLanPortsStateArpOut OBJECT-TYPE
+     SYNTAX   Counter64
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+        "нормально передано ARP пакетов"
+     ::= { aFpsuLanPortsStateEntry 7 }
+
+  aFpsuLanPortsStateArpDrop OBJECT-TYPE
+     SYNTAX   Counter64
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+        "отброшено при обработке ARP пакетов"
+     ::= { aFpsuLanPortsStateEntry 8 }
+
+  aFpsuLanPortsStateArpSkip OBJECT-TYPE
+     SYNTAX   Counter64
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+        "пропущено на приеме ARP пакетов"
+     ::= { aFpsuLanPortsStateEntry 9 }
+
+  aFpsuLanPortsStateArpBad OBJECT-TYPE
+     SYNTAX   Counter64
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+        "принято ошибочных ARP пакетов"
+     ::= { aFpsuLanPortsStateEntry 10 }
+
+  aFpsuLanPortsStateIpIn OBJECT-TYPE
+     SYNTAX   Counter64
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+        "нормально принято IP пакетов"
+     ::= { aFpsuLanPortsStateEntry 11 }
+
+  aFpsuLanPortsStateIpOut OBJECT-TYPE
+     SYNTAX   Counter64
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+        "нормально передано IP пакетов"
+     ::= { aFpsuLanPortsStateEntry 12 }
+
+  aFpsuLanPortsStateIpDrop OBJECT-TYPE
+     SYNTAX   Counter64
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+        "отброшено при обработке IP пакетов"
+     ::= { aFpsuLanPortsStateEntry 13 }
+
+  aFpsuLanPortsStateIpSkip OBJECT-TYPE
+     SYNTAX   Counter64
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+        "пропущено на приеме IP пакетов"
+     ::= { aFpsuLanPortsStateEntry 14 }
+
+  -- =======================================================================
+  -- Общая статистика
+  aFpsuCommonState OBJECT IDENTIFIER ::= { aFpsuState 11 }
+
+  aFpsuCommonActiveClients OBJECT-TYPE
+     SYNTAX   INTEGER
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+       "Количество активных клиентов"
+     ::= { aFpsuCommonState 1 }
+
+  aFpsuCommonClientsCount OBJECT-TYPE
+     SYNTAX   INTEGER
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+       "Количество клиентов"
+     ::= { aFpsuCommonState 2 }
+
+  aFpsuHotReserveState OBJECT IDENTIFIER ::= { aFpsuState 12 }
+  aFpsuHotReserveStateTable OBJECT-TYPE
+     SYNTAX   SEQUENCE OF FpsuHotReserveStateEntry
+     MAX-ACCESS   not-accessible
+     STATUS   current
+     DESCRIPTION
+                  "Информация о горячем резерве"
+     ::= { aFpsuState 12 }
+
+  aFpsuHotReserveStateEntry OBJECT-TYPE
+     SYNTAX   FpsuHotReserveStateEntry
+     MAX-ACCESS   not-accessible
+     STATUS   current
+     DESCRIPTION
+                  "Информация о горячем резерве"
+     INDEX { aFpsuHotReserveStateIndex }
+     ::= { aFpsuHotReserveStateTable 1 }
+
+  FpsuHotReserveStateEntry ::= SEQUENCE {
+     aFpsuHotReserveStateIndex        INTEGER,
+     aFpsuHotReserveStateVpn          INTEGER,
+     aFpsuHotReserveStateLocalMac     MacAddress,
+     aFpsuHotReserveStateRemoteMac    MacAddress,
+     aFpsuHotReserveStateLink         INTEGER
+  }
+
+  aFpsuHotReserveStateIndex OBJECT-TYPE
+     SYNTAX   INTEGER
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+                  "Номер интерфейса"
+     ::= { aFpsuHotReserveStateEntry 1 }
+
+  aFpsuHotReserveStateVpn OBJECT-TYPE
+     SYNTAX   INTEGER {
+        dataexc       (0),
+        searchotr     (1),
+        waitsynok     (3)
+     }
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+       "cостояние VPN-тунеля горячего резерва
+        dataexc    обмен данными (синхронизовано)
+        searchotr  поиск другой машины широковещательными запросами
+        waitsynok  ожидание установления синхронизации"
+     ::= { aFpsuHotReserveStateEntry 2 }
+
+  aFpsuHotReserveStateLocalMac OBJECT-TYPE
+     SYNTAX   MacAddress
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+       "Mac-адрес ФПСУ"
+     ::= { aFpsuHotReserveStateEntry 5 }
+
+  aFpsuHotReserveStateRemoteMac OBJECT-TYPE
+     SYNTAX   MacAddress
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+       "Mac-адрес удаленной ФПСУ"
+     ::= { aFpsuHotReserveStateEntry 6 }
+
+  aFpsuHotReserveStateLink OBJECT-TYPE
+     SYNTAX   INTEGER {
+        noreply      (0),
+        workdone     (1)
+     }
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+       "Состояние порта горячего резервирования
+         noreply   - не отвечает
+         workdone  - в работе
+       "
+     ::= { aFpsuHotReserveStateEntry 7 }
+
+  ---------------------------------------------------------------------------
+  -- FPSU lan ports dpdk/hw state
+  aFpsuLanPortsDpdkStateTable OBJECT-TYPE
+     SYNTAX   SEQUENCE OF FpsuLanPortsDpdkStateEntry
+     MAX-ACCESS   not-accessible
+     STATUS   current
+     DESCRIPTION
+        "Состояние lan-портов из драйвера"
+     ::= { aFpsuState 13 }
+
+  aFpsuLanPortsDpdkStateEntry OBJECT-TYPE
+     SYNTAX   FpsuLanPortsDpdkStateEntry
+     MAX-ACCESS   not-accessible
+     STATUS   current
+     DESCRIPTION
+         "Состояние lan-портов"
+     INDEX { aFpsuLanPortsDpdkStateIndex }
+     ::= { aFpsuLanPortsDpdkStateTable 1 }
+
+  FpsuLanPortsDpdkStateEntry ::= SEQUENCE {
+     aFpsuLanPortsDpdkStateIndex        INTEGER,
+     aFpsuLanPortsDpdkPoeFull           Counter64,
+     aFpsuLanPortsDpdkCpuFull           Counter64,
+     aFpsuLanPortsDpdkImissed           Counter64,
+     aFpsuLanPortsDpdkIerrors           Counter64,
+     aFpsuLanPortsDpdkXcrc              Counter64,
+     aFpsuLanPortsDpdkXmspdc            Counter64,
+     aFpsuLanPortsDpdkXrlec             Counter64,
+     aFpsuLanPortsDpdkXruc              Counter64,
+     aFpsuLanPortsDpdkXroc              Counter64,
+     aFpsuLanPortsDpdkXillerrc          Counter64,
+     aFpsuLanPortsDpdkXerrbc            Counter64,
+     aFpsuLanPortsDpdkXrfc              Counter64,
+     aFpsuLanPortsDpdkXfccrc            Counter64,
+     aFpsuLanPortsDpdkXfclast           Counter64,
+     aFpsuLanPortsDpdkXrxrx             Counter64,
+     aFpsuLanPortsDpdkXalign            Counter64,
+     aFpsuLanPortsDpdkXcarrierext       Counter64,
+     aFpsuLanPortsDpdkRXGood            Counter64
+  }
+
+  aFpsuLanPortsDpdkStateIndex OBJECT-TYPE
+     SYNTAX   INTEGER
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+        "Номер LAN-порта"
+     ::= { aFpsuLanPortsDpdkStateEntry 1 }
+
+  aFpsuLanPortsDpdkPoeFull OBJECT-TYPE
+     SYNTAX   Counter64
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+        "Сбросов пакетов драйвером, из-за переполнения reorder"
+     ::= { aFpsuLanPortsDpdkStateEntry 2 }
+
+  aFpsuLanPortsDpdkCpuFull OBJECT-TYPE
+     SYNTAX   Counter64
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+        "Сбросов пакетов драйвером, из-за переполнения очередей обработки"
+     ::= { aFpsuLanPortsDpdkStateEntry 3 }
+  
+  aFpsuLanPortsDpdkImissed OBJECT-TYPE
+     SYNTAX   Counter64
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+        "Сбросов пакетов из-за отсутствия памяти для приёма на сетевой карте "
+     ::= { aFpsuLanPortsDpdkStateEntry 4 }
+
+  aFpsuLanPortsDpdkIerrors OBJECT-TYPE
+     SYNTAX   Counter64
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION " Общее количество сброшенных пакетов по всем счётчикам dpdkX<> "
+     ::= { aFpsuLanPortsDpdkStateEntry 5 }
+  
+  aFpsuLanPortsDpdkXcrc OBJECT-TYPE
+     SYNTAX   Counter64
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION "
+     На основании документа Intel® 82599 10 GbE Controller Datasheet
+
+     Раздел 8.2.3.23.1  CRC Error Count — CRCERRS (0x04000; RC)
+
+     Counts the number of receive packets with CRC errors. In order for a packet to be
+     counted in this register, it must be 64 bytes or greater (from <Destination Address>
+     through <CRC>, inclusively) in length. This register counts all packets received,
+     regardless of L2 filtering and receive enablement.
+
+     Замечание, для Intel 8256EB см. Intel® 82576EB Gigabit Ethernet Controller Datasheet
+     см. раздел 8.19.1 CRC Error Count - CRCERRS (0x04000; RC)
+     "
+     ::= { aFpsuLanPortsDpdkStateEntry 6 }
+
+  aFpsuLanPortsDpdkXmspdc OBJECT-TYPE
+     SYNTAX   Counter64
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION "
+     На основании документа Intel® 82599 10 GbE Controller Datasheet
+
+     Раздел 8.2.3.23.69 MAC Short Packet Discard Count — MSPDC (0x04010; RC)
+
+     Number of MAC short packet discard packets received. "
+     ::= { aFpsuLanPortsDpdkStateEntry 7 }
+
+  aFpsuLanPortsDpdkXrlec OBJECT-TYPE
+     SYNTAX   Counter64
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION "
+     На основании документа Intel® 82599 10 GbE Controller Datasheet
+
+     Раздел 8.2.3.23.7 Receive Length Error Count — RLEC (0x04040; RC)
+
+     Number of packets with receive length errors.
+     A length error occurs if an incoming packet length field in the MAC header doesn't match
+     the packet length. To enable the receive length error count, the HLREG.RXLNGTHERREN
+     bit needs to be set to 1b. This registers counts all packets received, regardless of L2
+     filtering and receive enablement. 
+
+     Замечание, для Intel 8256EB см. Intel® 82576EB Gigabit Ethernet Controller Datasheet
+     см. раздел 8.19.13 Receive Length Error Count - RLEC (0x04040; RC)
+     "
+     ::= { aFpsuLanPortsDpdkStateEntry 8 }
+
+  aFpsuLanPortsDpdkXruc OBJECT-TYPE
+     SYNTAX   Counter64
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION "
+     На основании документа Intel® 82599 10 GbE Controller Datasheet
+
+     Раздел 8.2.3.23.50 Receive Undersize Count — RUC (0x040A4; RC)
+
+     Receive Undersize Error.
+     This register counts the number of received frames that are shorter than minimum size
+     (64 bytes from <Destination Address> through <CRC>, inclusively), and had a valid
+     CRC. This register counts packets regardless of L2 filtering and receive enablement. 
+
+
+     Замечание, для Intel 8256EB см. Intel® 82576EB Gigabit Ethernet Controller Datasheet
+     см. раздел 8.19.35 Receive Undersize Count - RUC (0x040A4; RC)
+     "
+     ::= { aFpsuLanPortsDpdkStateEntry 9 }
+
+  aFpsuLanPortsDpdkXroc OBJECT-TYPE
+     SYNTAX   Counter64
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION "
+     На основании документа Intel® 82599 10 GbE Controller Datasheet
+
+     Раздел 8.2.3.23.52 Receive Oversize Count — ROC (0x040AC; RC)
+
+     Receive Oversize Error. This register counts the number of received frames that are
+     longer than maximum size as defined by MAXFRS.MFS (from <Destination Address>
+     through <CRC>, inclusively) and have valid CRC. This register counts packets regardless
+     of L2 filtering and receive enablement.
+
+     Замечание, для Intel 8256EB см. Intel® 82576EB Gigabit Ethernet Controller Datasheet
+     см. раздел 8.19.37 Receive Oversize Count - ROC (0x040AC; RC)
+     "
+     ::= { aFpsuLanPortsDpdkStateEntry 10 }
+
+  aFpsuLanPortsDpdkXillerrc OBJECT-TYPE
+     SYNTAX   Counter64
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION "
+     На основании документа Intel® 82599 10 GbE Controller Datasheet
+
+     Раздел 8.2.3.23.2 Illegal Byte Error Count — ILLERRC (0x04004; RC)
+
+     Illegal Byte Error Count.
+     Counts the number of receive packets with illegal bytes errors (such as there is an illegal
+     symbol in the packet). This registers counts all packets received, regardless of L2 filtering
+     and receive enablement.
+     "
+     ::= { aFpsuLanPortsDpdkStateEntry 11 }
+
+  aFpsuLanPortsDpdkXerrbc OBJECT-TYPE
+     SYNTAX   Counter64
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION "
+     На основании документа Intel® 82599 10 GbE Controller Datasheet
+
+     Раздел 8.2.3.23.3 Error Byte Packet Count — ERRBC (0x04008; RC)
+
+     Error Byte Count.
+     Counts the number of receive packets with error bytes (such as there is an error symbol
+     in the packet). This registers counts all packets received, regardless of L2 filtering and
+     receive enablement.
+     "
+     ::= { aFpsuLanPortsDpdkStateEntry 12 }
+
+  aFpsuLanPortsDpdkXrfc OBJECT-TYPE
+     SYNTAX   Counter64
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION "
+     На основании документа Intel® 82599 10 GbE Controller Datasheet
+
+     Раздел 8.2.3.23.51 Receive Fragment Count — RFC (0x040A8; RC)
+     
+     Number of receive fragment errors (frame shorted than 64 bytes from <Destination
+     Address> through <CRC>, inclusively) that have bad CRC (this is slightly different from
+     the Receive Undersize Count register).
+     This register counts packets regardless of L2 filtering and receive enablement.
+     "
+     ::= { aFpsuLanPortsDpdkStateEntry 13 }
+
+  aFpsuLanPortsDpdkXfccrc OBJECT-TYPE
+     SYNTAX   Counter64
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION "
+     На основании документа Intel® 82599 10 GbE Controller Datasheet
+
+     Раздел 8.2.3.23.81 FC CRC Error Count — FCCRC (0x05118; RC)
+     
+     FC CRC Count.
+     Count the number of packets with good Ethernet CRC and bad FC CRC.
+     "
+     ::= { aFpsuLanPortsDpdkStateEntry 14 }
+
+  aFpsuLanPortsDpdkXfclast OBJECT-TYPE
+     SYNTAX   Counter64
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION "
+     На основании документа Intel® 82599 10 GbE Controller Datasheet
+
+     Раздел 8.2.3.23.83 FC Last Error Count — FCLAST (0x02424; RC)
+
+     Number of packets received to valid FCoE contexts while their user buffers are
+     exhausted.
+     "
+     ::= { aFpsuLanPortsDpdkStateEntry 15 }
+  
+  aFpsuLanPortsDpdkXrxrx OBJECT-TYPE
+     SYNTAX   Counter64
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION "
+     На основании документа Intel® 82576EB Gigabit Ethernet Controller Datasheet
+     
+     Раздел 8.19.4 RX Error Count - RXERRC (0x0400C; RC)
+
+     Counts the number of packets received in which RX_ER was asserted by the PHY. In order for a packet
+     to be counted in this register, it must pass address filtering and must be 64 bytes or greater (from
+     <Destination Address> through <CRC>, inclusive) in length. If receives are not enabled, then this
+     register does not increment.
+
+     This register is not available in SerDes/SGMII modes.
+     "
+     ::= { aFpsuLanPortsDpdkStateEntry 16 }
+
+  aFpsuLanPortsDpdkXalign OBJECT-TYPE
+     SYNTAX   Counter64
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION "
+     На основании документа Intel® 82576EB Gigabit Ethernet Controller Datasheet
+     
+     Раздел 8.19.2 Alignment Error Count - ALGNERRC (0x04004; RC)
+
+     Counts the number of receive packets with alignment errors (the packet is not an integer number of
+     bytes in length). In order for a packet to be counted in this register, it must pass address filtering and
+     must be 64 bytes or greater (from <Destination Address> through <CRC>, inclusive) in length. If
+     receives are not enabled, then this register does not increment. This register is valid only in MII mode
+     during 10/100 Mb/s operation.
+     "
+     ::= { aFpsuLanPortsDpdkStateEntry 17 }
+
+  aFpsuLanPortsDpdkXcarrierext OBJECT-TYPE
+     SYNTAX   Counter64
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION "
+     На основании документа Intel® 82576EB Gigabit Ethernet Controller Datasheet
+     
+     Раздел 8.19.12 Host Transmit Discarded Packets by MAC Count - HTDPMC (0x0403C; RC)
+     
+     Number of packets sent by the host but discarded by the MAC.
+
+     This register counts the number of packets sent by the host (and not the manageability engine) that
+     are dropped by the MAC. This can include packets dropped because of excessive collisions or link fail
+     events.
+     "
+     ::= { aFpsuLanPortsDpdkStateEntry 18 }
+  
+
+  aFpsuLanPortsDpdkRXGood OBJECT-TYPE
+     SYNTAX   Counter64
+     MAX-ACCESS   read-only
+     STATUS   current
+     DESCRIPTION
+        "Успешно принятых пакетов сетевой картой"
+     ::= { aFpsuLanPortsDpdkStateEntry 100 }
